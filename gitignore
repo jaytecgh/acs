@@ -1,0 +1,29 @@
+
+# Python virtual environment
+virtual/
+venv/
+env/
+
+# Django
+*.pyc
+__pycache__/
+db.sqlite3
+media/
+staticfiles/
+*.log
+.env
+
+# React (Vite) build and dependencies
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# System/IDE settings
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db

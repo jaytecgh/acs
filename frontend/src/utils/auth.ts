@@ -1,21 +1,61 @@
 import axios from 'axios';
 import { jwtDecode } from "jwt-decode";
 
-const API_BASE_URL = 'http://localhost:8000/api/auth'; // Update with your backend auth URL
+const API_BASE_URL = 'http://localhost:8000/auth'; // Adjust to your backend route & change when hosting
+
 
 export const login = async (email: string, password: string) => {
+  const response = await axios.post(`${API_BASE_URL}/token/`, {
+    email,
+    password,
+  });
+
+  const { access, refresh, user } = response.data;
+
+  localStorage.setItem("access", access);
+  localStorage.setItem("refresh", refresh);
+  localStorage.setItem("user", JSON.stringify(user));
+};
+
+export const register = async (email: string, password: string, full_name: string) => {
+  const response = await axios.post(`${API_BASE_URL}/register/`, {
+    email,
+    password,
+    full_name,
+  });
+  return response.data;
+};
+
+
+export const requestPasswordReset = async (email: string) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/login/`, { email, password });
-    localStorage.setItem('token', response.data.access);
+    const response = await axios.post(`${API_BASE_URL}/forgot-password/`, { email });
     return response.data;
   } catch (error) {
     throw error;
   }
 };
 
-export const logout = () => {
-  localStorage.removeItem('token');
+export const resetPassword = async (token: string, newPassword: string) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/reset-password/`, { token, password: newPassword });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 };
+
+export const logout = async () => {
+  const refresh = localStorage.getItem("refresh");
+  if (refresh) {
+    await axios.post(`${API_BASE_URL}/logout/`, { refresh });
+  }
+  localStorage.removeItem("token");
+  localStorage.removeItem("refresh");
+  localStorage.removeItem("user");
+};
+
+
 
 export const getToken = (): string | null => {
   return localStorage.getItem("token");
@@ -30,11 +70,34 @@ export const getUser = () => {
 export const getUserRole = (): string | null => {
   const token = getToken();
   if (!token) return null;
-  
+
   const decoded: any = jwtDecode(token);
   return decoded.role || null;
 };
 
 export const isAuthenticated = () => {
-  return !!getToken();
+  const token = getToken();
+  if (!token) return false;
+  try {
+    const decoded: any = jwtDecode(token);
+    const exp = decoded.exp * 1000;
+    return Date.now() < exp;
+  } catch {
+    return false;
+  }
 };
+
+export const refreshAccessToken = async () => {
+  const refresh = localStorage.getItem("refresh");
+  if (!refresh) throw new Error("No refresh token available");
+
+  try {
+    const response = await axios.post(`${API_BASE_URL}/token/refresh/`, { refresh });
+    localStorage.setItem("token", response.data.access);
+    return response.data.access;
+  } catch (error) {
+    logout();
+    throw error;
+  }
+};
+

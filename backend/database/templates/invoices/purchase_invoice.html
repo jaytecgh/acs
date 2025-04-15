@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body { font-family: 'Arial', sans-serif; padding: 30px; font-size: 14px; margin: 30px;}
+            h1, h2, h3 { text-align: center; margin-bottom: 5px; }
+            table {
+                width: 100%; border-collapse: collapse;
+                margin-top: 20px;
+            }
+            th, td {
+                border: 1px solid #222;
+                padding: 8px;
+                text-align: left;
+            }
+            .logo {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .logo img {
+                height: 60px;
+            }
+            .section { margin-top: 40px; }
+            .signature-box {
+                margin-top: 50px;
+                display: flex;
+                justify-content: space-between;
+            }
+            .signature {
+                width: 30%;
+                border-top: 1px solid #000;
+                text-align: center;
+                padding-top: 5px;
+            }
+            .footer {
+                margin-top: 60px;
+                font-size: 11px;
+                text-align: center;
+                color: #777;
+            }
+        </style>
+    </head>
+    
+<body>
+    <div class="logo">
+        <img src="{{ STATIC_ROOT }}/images/logo.png" alt="Company Logo" />
+    </div>
+    
+    <h1>Purchase Invoice #{{ purchase.invoice_number }}</h1>
+    <p><strong>Date:</strong> {{ purchase.date }}</p>
+    <p><strong>Supplier:</strong> {{ purchase.supplier.name }}</p>
+    <p><strong>Supplier Tin:</strong> {{ purchase.supplier.tin }}</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Qty</th>
+                <th>Unit Price</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in purchase.purchasetransactions.all %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>₵{{ item.unit_price }}</td>
+                <td>₵{{ item.quantity|floatformat:2|add:item.unit_price|floatformat:2 }}</td>
+            </tr>
+            <tr>
+                <td colspan="3">Subtotal</td>
+                <td>₵{{ purchase.total_amount }}</td>
+            </tr>
+            <tr>
+                <td colspan="3">VAT (1.219%)</td>
+                <td>₵{{ vat }}</td>
+            </tr>
+            <tr>
+                <td colspan="3">Transportation</td>
+                <td>₵{{ purchase.transportation_cost }}</td>
+            </tr>
+            <tr class="total">
+                <td colspan="3"><strong>Total</strong></td>
+                <td><strong>₵{{ final_total }}</strong></td>
+            </tr>
+            
+        </tbody>
+    </table>
+    <div class="signature-box">
+        <div class="signature">
+            Client/Supplier
+        </div>
+        <div class="">
+            
+        </div>
+        <div class="signature">
+            Authorized Officer
+        </div>
+    </div>
+    
+    <div class="footer">
+        Powered by Construction Supply • {{ transport.created_at|date:"Y" }}
+    </div>
+    
+</body>
+</html>

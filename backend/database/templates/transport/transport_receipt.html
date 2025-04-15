@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body { font-family: 'Arial', sans-serif; padding: 30px; font-size: 14px; margin: 30px;}
+            h1, h2, h3 { text-align: center; margin-bottom: 5px; }
+            table {
+                width: 100%; border-collapse: collapse;
+                margin-top: 20px;
+            }
+            th, td {
+                border: 1px solid #222;
+                padding: 8px;
+                text-align: left;
+            }
+            .logo {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .logo img {
+                height: 60px;
+            }
+            .section { margin-top: 40px; }
+            .signature-box {
+                margin-top: 50px;
+                display: flex;
+                justify-content: space-between;
+            }
+            .signature {
+                width: 30%;
+                border-top: 1px solid #000;
+                text-align: center;
+                padding-top: 5px;
+            }
+            .footer {
+                margin-top: 60px;
+                font-size: 11px;
+                text-align: center;
+                color: #777;
+            }
+        </style>
+    </head>
+    
+<body>
+    <div class="logo">
+        <img src="{{ STATIC_ROOT }}/images/logo.png" alt="Company Logo" />
+    </div>
+    
+    <h1>Transport Dispatch Note</h1>
+    <h2>{{ transport.transaction_type }} Delivery</h2>
+
+    <p><strong>Date:</strong> {{ transport.created_at|date:"d M Y" }}</p>
+    <p><strong>Invoice Number:</strong> {{ invoice_number }}</p>
+    <p><strong>Driver:</strong> {{ transport.driver_name }}</p>
+    <p><strong>Vehicle No:</strong> {{ transport.vehicle_number }}</p>
+
+    <div class="section">
+        <h3>Delivery Route</h3>
+        <table>
+            <tr>
+                <th>From</th>
+                <td>{{ transport.from_location }}</td>
+            </tr>
+            <tr>
+                <th>To</th>
+                <td>{{ transport.to_location }}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="section">
+        <h3>Items Being Delivered</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Qty</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>    
+
+    <div class="signature-box">
+        <div class="signature">
+            Driver's Signature
+        </div>
+        <div class="signature">
+            Recipient
+        </div>
+    </div>
+    
+    <div class="footer">
+        Powered by Construction Supply • {{ transport.created_at|date:"Y" }}
+    </div>
+    
+</body>
+</html>
