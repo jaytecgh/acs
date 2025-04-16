@@ -14,3 +14,4 @@ qrcode
 django-filter
 requests
 drf-yasg
+python-decouple
