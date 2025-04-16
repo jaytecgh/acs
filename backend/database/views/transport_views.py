@@ -2,13 +2,15 @@ from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from django.template.loader import get_template
 from django.http import HttpResponse
-from weasyprint import HTML
 from decimal import Decimal
-
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
 from database.models import Transport
 from database.serializers import TransportSerializer
 from database.permissions import IsAdmin, IsOperations
 
+
+# --- TransportViewSet ---
 class TransportViewSet(viewsets.ModelViewSet):
     queryset = Transport.objects.all()
     serializer_class = TransportSerializer
@@ -21,25 +23,20 @@ class TransportViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def receipt(self, request, pk=None):
         transport = self.get_object()
-
-        invoice_number = "-"
-        items = []
-        
-        if transport.sale:
-            invoice_number = transport.sale.invoice_number
-            items = transport.sale.saletransactions.all()
-        elif transport.purchase:
-            invoice_number = transport.purchase.invoice_number
-            items = transport.purchase.purchasetransactions.all()
-            
-        template = get_template('transport/transport_receipt.html')
-        html = template.render({
-            'transport': transport,
-            'invoice_number': invoice_number,
-            'items': items,
-        })
-
-        pdf_file = HTML(string=html).write_pdf()
-        response = HttpResponse(pdf_file, content_type='application/pdf')
+        response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = f'inline; filename=transport_{transport.id}.pdf'
+
+        p = canvas.Canvas(response, pagesize=A4)
+        width, height = A4
+
+        p.setFont("Helvetica-Bold", 16)
+        p.drawString(100, height - 50, "Transport Receipt")
+        p.setFont("Helvetica", 12)
+        p.drawString(50, height - 100, f"Transporter: {transport.transporter.name}")
+        p.drawString(50, height - 120, f"Amount Paid: GHS {transport.amount:.2f}")
+        p.drawString(50, height - 140, f"Date: {transport.date.strftime('%Y-%m-%d')}")
+        p.drawString(50, height - 180, "Authorized By: ______________________")
+
+        p.showPage()
+        p.save()
         return response
