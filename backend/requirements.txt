@@ -32,4 +32,5 @@ PyPDF2
 fpdf
 qrcode
 requests
-rest_framework_simplejwt
+djangorestframework-simplejwt==5.3.1
+
