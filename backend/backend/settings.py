@@ -23,10 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-1fo8uj6rjh&x2@rdwi1_r@zu8*x2^hh9i+0hq99-(=5^m&6thu'
+SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = ['acs-0cah.onrender.com', 'localhost', '127.0.0.1']
 
@@ -126,6 +126,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # This tells Django where to find your static files in development
 STATICFILES_DIRS = [
@@ -137,8 +138,11 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost,127.0.0.1").split(",")
+
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # React Frontend URL
+    "https://acs-chi.vercel.app",
+    "https://acs-jaytecs-projects.vercel.app",
 ]
 
 REST_FRAMEWORK = {

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { jwtDecode } from "jwt-decode";
 
-const API_BASE_URL = 'http://localhost:8000/auth'; // Adjust to your backend route & change when hosting
+const API_BASE_URL = 'https://acs-0cah.onrender.com/auth'; // Adjust to your backend route & change when hosting
 
 
 export const login = async (email: string, password: string) => {

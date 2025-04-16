@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getToken, refreshAccessToken, logout } from './auth';
 
-const API_BASE_URL = 'http://localhost:8000/auth';
+const API_BASE_URL = 'https://acs-0cah.onrender.com/auth';
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
