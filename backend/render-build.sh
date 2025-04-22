@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
-# This runs automatically after your app deploys on Render
 
+# Install dependencies
+pip install -r requirements.txt
+
+# Run migrations
 python manage.py makemigrations
+
+# Run migrations
 python manage.py migrate
 
-# Optional: create default superuser if it doesn't exist
-echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(email='constructionsupplyghstaff2@gmail.com').exists() or User.objects.create_superuser('constructionsupplyghstaff2@gmail.com', '@ACS-admin@')" | python manage.py shell
+# Create superuser
+python create_superuser.py
+
+# Collect static files (optional but recommended)
+python manage.py collectstatic --noinput
