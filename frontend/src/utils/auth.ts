@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { jwtDecode } from "jwt-decode";
 
-const VITE_API_BASE_UR = import.meta.env.VITE_VITE_API_BASE_UR; // Adjust to your backend route & change when hosting
+const VITE_API_BASE_UR = import.meta.env.VITE_API_BASE_UR; // Adjust to your backend route & change when hosting
 
 export const login = async (email: string, password: string) => {
   const response = await axios.post(`${VITE_API_BASE_UR}/auth/token/`, {
