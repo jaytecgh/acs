@@ -22,13 +22,13 @@ const AppRouter = () => {
   return (
     <Routes>
       {/* Public Routes */}
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<Dashboard />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 
       {/* Protected Routes inside layout */}
       <Route element={<MainLayout />}>
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/Home" element={<Home />} />
         <Route path="/products" element={<Products />} />
         <Route path="/clients" element={<Clients />} />
         <Route path="/supplier" element={<Supplier />} />
