@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { getToken, refreshAccessToken, logout } from './auth';
 
-const VITE_API_BASE_UR = import.meta.env.VITE_API_BASE_UR;
+const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const apiClient = axios.create({
-  baseURL: VITE_API_BASE_UR,
+  baseURL: VITE_API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
