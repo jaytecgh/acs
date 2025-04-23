@@ -28,7 +28,10 @@ def register(request):
         return Response({'error': 'Email already registered.'}, status=400)
 
     user = User.objects.create_user(email=email, password=password)
+    user.is_active = True
+    user.save()
     Employee.objects.create(user=user, full_name=full_name)
+
 
     return Response({'message': 'Account created. Please wait for admin approval.'}, status=201)
 
@@ -79,7 +82,7 @@ def forgot_password(request):
     try:
         user = User.objects.get(email=email)
         token = default_token_generator.make_token(user)
-        reset_link = f"http://localhost:5173/reset-password/{token}"
+        reset_link = f"https://acs-chi.vercel.app/reset-password/{token}"
 
         send_mail(
             subject="Password Reset Request",
