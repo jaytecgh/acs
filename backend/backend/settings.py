@@ -158,6 +158,13 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
+
+AUTHENTICATION_BACKENDS = [
+    'database.backends.EmailBackend',  # 👈 use email for login
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
 # DEV EMAIL SETTINGS - Will print to terminal
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST_USER = 'constructionsupplyghstaff2@gmail.com'  # Dummy display email

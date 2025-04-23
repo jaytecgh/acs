@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.contrib.auth import authenticate
 from database.models import (
     Employee, Admin, Supplier, Product, Client, Purchase, PurchaseTransaction, 
     Sale, SaleTransaction, Payment, InventoryLog, Transport, Expense, 
@@ -7,6 +9,27 @@ from database.models import (
 )
 
 User = get_user_model()
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    username_field = 'email'  # Override to use email
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        password = attrs.get('password')
+
+        user = authenticate(email=email, password=password)
+
+        if user is None:
+            raise serializers.ValidationError("Invalid email or password.")
+
+        data = super().validate(attrs)
+        data['user'] = {
+            "id": user.id,
+            "email": user.email,
+        }
+        return data
+
 
 # ✅ User Serializer
 class UserSerializer(serializers.ModelSerializer):
