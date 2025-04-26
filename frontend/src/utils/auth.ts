@@ -4,7 +4,7 @@ import { jwtDecode } from "jwt-decode";
 const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL; // Adjust to your backend route & change when hosting
 
 export const login = async (email: string, password: string) => {
-  const response = await axios.post(`${VITE_API_BASE_URL}/token/`, {
+  const response = await axios.post(`${VITE_API_BASE_URL}/auth/token/`, {
     email,
     password,
   }); 
@@ -17,7 +17,7 @@ export const login = async (email: string, password: string) => {
 };
 
 export const register = async (email: string, password: string, full_name: string) => {
-  const response = await axios.post(`${VITE_API_BASE_URL}/register/`, {
+  const response = await axios.post(`${VITE_API_BASE_URL}/auth/register/`, {
     email,
     password,
     full_name,
@@ -28,7 +28,7 @@ export const register = async (email: string, password: string, full_name: strin
 
 export const requestPasswordReset = async (email: string) => {
   try {
-    const response = await axios.post(`${VITE_API_BASE_URL}/forgot-password/`, { email });
+    const response = await axios.post(`${VITE_API_BASE_URL}/auth/forgot-password/`, { email });
     return response.data;
   } catch (error) {
     throw error;
@@ -37,7 +37,7 @@ export const requestPasswordReset = async (email: string) => {
 
 export const resetPassword = async (token: string, newPassword: string) => {
   try {
-    const response = await axios.post(`${VITE_API_BASE_URL}/reset-password/`, { token, password: newPassword });
+    const response = await axios.post(`${VITE_API_BASE_URL}/auth/reset-password/`, { token, password: newPassword });
     return response.data;
   } catch (error) {
     throw error;
@@ -47,7 +47,7 @@ export const resetPassword = async (token: string, newPassword: string) => {
 export const logout = async () => {
   const refresh = localStorage.getItem("refresh");
   if (refresh) {
-    await axios.post(`${VITE_API_BASE_URL}/logout/`, { refresh });
+    await axios.post(`${VITE_API_BASE_URL}/auth/logout/`, { refresh });
   }
   localStorage.removeItem("access");
   localStorage.removeItem("refresh");
@@ -91,7 +91,7 @@ export const refreshAccessToken = async () => {
   if (!refresh) throw new Error("No refresh token available");
 
   try {
-    const response = await axios.post(`${VITE_API_BASE_URL}/token/refresh/`, { refresh });
+    const response = await axios.post(`${VITE_API_BASE_URL}/auth/token/refresh/`, { refresh });
     localStorage.setItem("token", response.data.access);
     return response.data.access;
   } catch (error) {
